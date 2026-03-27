@@ -1,0 +1,9 @@
+project: "{{PROJECT_SLUG}}"
+pm_name: "{{PM_NAME}}"
+jira_board: ""
+jira_project_key: ""
+slack_channel: ""
+slack_summarize: true
+git_repo: ""
+briefing_max_items: 5
+priority_weight: 1.0

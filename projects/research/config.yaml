@@ -1,0 +1,9 @@
+project: research
+pm_name: "Research PM"
+jira_board: ""
+jira_project_key: ""
+slack_channel: ""
+slack_summarize: true
+git_repo: ""
+briefing_max_items: 5
+priority_weight: 1.0

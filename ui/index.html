@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>open-zeu</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+    }
+    header {
+      padding: 24px;
+      border-bottom: 1px solid #1f2937;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    h1 {
+      margin: 0 0 6px 0;
+      font-size: 22px;
+    }
+    p {
+      margin: 0;
+      color: #94a3b8;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .settings-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      border: 1px solid #334155;
+      background: #111827;
+      color: #e6edf3;
+      cursor: pointer;
+      font-size: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .settings-btn:hover {
+      background: #162033;
+      border-color: #4b5563;
+    }
+    .status {
+      color: #93c5fd;
+      font-size: 13px;
+      min-height: 20px;
+    }
+    .wrap {
+      padding: 20px 24px 32px;
+    }
+    .filters {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .filter-btn {
+      border: 1px solid #334155;
+      background: #111827;
+      color: #cbd5e1;
+      padding: 8px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .filter-btn.active {
+      background: #1d4ed8;
+      border-color: #1d4ed8;
+      color: #fff;
+    }
+    .filter-avatar {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      object-fit: cover;
+      flex: 0 0 auto;
+    }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .column {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 14px;
+      min-height: 320px;
+      padding: 14px;
+    }
+    .column.drag-over {
+      border-color: #60a5fa;
+      background: #0f1a2b;
+    }
+    .column h2 {
+      margin: 0 0 14px 0;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #93c5fd;
+    }
+    .column-body {
+      min-height: 240px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .card {
+      border: 1px solid #273244;
+      border-left-width: 5px;
+      border-radius: 12px;
+      background: #0b1220;
+      padding: 12px;
+      cursor: grab;
+    }
+    .card:active {
+      cursor: grabbing;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .card-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      object-fit: cover;
+      flex: 0 0 auto;
+    }
+    .card-title {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+    .meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+      font-size: 12px;
+      color: #94a3b8;
+    }
+    .pill {
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #162033;
+    }
+    .notes {
+      margin: 0;
+      white-space: pre-wrap;
+      color: #cbd5e1;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .rd {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #93c5fd;
+    }
+    .empty {
+      color: #64748b;
+      font-size: 13px;
+      padding: 8px 2px;
+    }
+    .pm-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      z-index: 200;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
+    .pm-modal-overlay.active {
+      display: flex;
+    }
+    .pm-modal {
+      width: min(1040px, 100%);
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      background: #111827;
+      border: 1px solid #273244;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+    }
+    .pm-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid #1f2937;
+    }
+    .pm-modal-header h2 {
+      margin: 0;
+      font-size: 15px;
+      color: #e6edf3;
+    }
+    .pm-modal-close {
+      border: 0;
+      background: transparent;
+      color: #94a3b8;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .pm-modal-body {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      min-height: 0;
+      flex: 1;
+    }
+    .pm-agent-list {
+      border-right: 1px solid #1f2937;
+      padding: 12px;
+      overflow: auto;
+    }
+    .pm-agent-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-bottom: 8px;
+      background: #0f172a;
+    }
+    .pm-agent-item:hover,
+    .pm-agent-item.active {
+      border-color: #334155;
+      background: #162033;
+    }
+    .pm-agent-face {
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      object-fit: cover;
+      flex: 0 0 auto;
+    }
+    .pm-agent-name {
+      font-size: 14px;
+      color: #e6edf3;
+      font-weight: 600;
+    }
+    .pm-agent-sub {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+    .pm-skills-panel {
+      padding: 20px;
+      overflow: auto;
+    }
+    .pm-skills-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .pm-skills-avatar {
+      width: 54px;
+      height: 54px;
+      border-radius: 999px;
+      object-fit: cover;
+      border: 1px solid #334155;
+      flex: 0 0 auto;
+    }
+    .pm-skills-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: #e6edf3;
+    }
+    .pm-skills-project {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 3px;
+    }
+    .pm-section-label {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #93c5fd;
+      margin: 18px 0 8px;
+    }
+    .pm-file-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .pm-file-item {
+      border: 1px solid #273244;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #0b1220;
+    }
+    .pm-file-item.expanded {
+      border-color: #3b82f6;
+    }
+    .pm-file-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      cursor: pointer;
+    }
+    .pm-file-name {
+      font-size: 13px;
+      color: #e6edf3;
+      font-weight: 600;
+    }
+    .pm-file-open {
+      color: #93c5fd;
+      text-decoration: none;
+      font-size: 12px;
+      flex: 0 0 auto;
+    }
+    .pm-file-body {
+      display: none;
+      border-top: 1px solid #1f2937;
+      padding: 14px;
+    }
+    .pm-file-body pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      line-height: 1.55;
+      color: #cbd5e1;
+    }
+    .pm-skills-empty {
+      color: #64748b;
+      font-size: 13px;
+      padding: 4px 0;
+    }
+    @media (max-width: 1100px) {
+      .board {
+        grid-template-columns: 1fr 1fr;
+      }
+      .pm-modal-body {
+        grid-template-columns: 1fr;
+      }
+      .pm-agent-list {
+        border-right: 0;
+        border-bottom: 1px solid #1f2937;
+      }
+    }
+    @media (max-width: 700px) {
+      .board {
+        grid-template-columns: 1fr;
+      }
+      .header-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>open-zeu</h1>
+      <p>Local board for PM1, PM2, PM3, and PM4.</p>
+    </div>
+    <div class="header-right">
+      <button class="settings-btn" id="settings-btn" title="Project manager settings">🤖</button>
+      <div class="status" id="status"></div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="filters" id="filters"></div>
+    <div class="board" id="board"></div>
+  </div>
+
+  <div class="pm-modal-overlay" id="pm-modal-overlay">
+    <div class="pm-modal">
+      <div class="pm-modal-header">
+        <h2>Project managers</h2>
+        <button class="pm-modal-close" id="pm-modal-close">✕</button>
+      </div>
+      <div class="pm-modal-body">
+        <div class="pm-agent-list" id="pm-agent-list"></div>
+        <div class="pm-skills-panel" id="pm-skills-panel"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API = "/api";
+    const PM_ORDER = ["pm1", "pm2", "pm3", "pm4"];
+    const STATUSES = ["todo", "scoped", "in_progress", "review"];
+    const STATUS_LABELS = {
+      todo: "Todo",
+      scoped: "Scoped",
+      in_progress: "In Progress",
+      review: "Review"
+    };
+
+    let repos = {};
+    let allData = {};
+    let skillsData = {};
+    let activeRepo = "all";
+    let activePm = null;
+    let dragging = null;
+
+    function showStatus(message, isError = false) {
+      const status = document.getElementById("status");
+      status.textContent = message;
+      status.style.color = isError ? "#fca5a5" : "#93c5fd";
+      if (message) {
+        window.clearTimeout(showStatus.timer);
+        showStatus.timer = window.setTimeout(() => {
+          status.textContent = "";
+        }, 1800);
+      }
+    }
+
+    function avatarFor(name) {
+      return `/avatars/${name}.svg?v=1`;
+    }
+
+    function repoNames() {
+      return PM_ORDER.filter((name) => repos[name]);
+    }
+
+    function repoColor(repo) {
+      return repos[repo]?.color || "#60a5fa";
+    }
+
+    function repoLabel(repo) {
+      return repo.toUpperCase();
+    }
+
+    function filteredItems() {
+      const names = activeRepo === "all" ? repoNames() : [activeRepo];
+      return names.flatMap((name) =>
+        (allData[name]?.backlog || []).map((item) => ({ ...item, repo: name }))
+      );
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function renderFilters() {
+      const filters = document.getElementById("filters");
+      const names = ["all", ...repoNames()];
+      filters.innerHTML = names.map((name) => {
+        const label = name === "all" ? "All" : repoLabel(name);
+        const active = name === activeRepo ? "active" : "";
+        const avatar = name === "all"
+          ? ""
+          : `<img class="filter-avatar" src="${avatarFor(name)}" alt="${label} avatar">`;
+        return `<button class="filter-btn ${active}" data-repo="${name}">${avatar}<span>${label}</span></button>`;
+      }).join("");
+
+      filters.querySelectorAll("[data-repo]").forEach((button) => {
+        button.addEventListener("click", () => {
+          activeRepo = button.dataset.repo;
+          renderFilters();
+          renderBoard();
+        });
+      });
+    }
+
+    function makeCard(item) {
+      return `
+        <div class="card" draggable="true" data-id="${item.id}" data-repo="${item.repo}" style="border-left-color:${repoColor(item.repo)}">
+          <div class="card-header">
+            <img class="card-avatar" src="${avatarFor(item.owner)}" alt="${escapeHtml(item.owner)} avatar">
+            <div class="card-title">${escapeHtml(item.title)}</div>
+          </div>
+          <div class="meta">
+            <span class="pill">${escapeHtml(item.repo.toUpperCase())}</span>
+            <span class="pill">${escapeHtml(item.owner.toUpperCase())}</span>
+            <span class="pill">${escapeHtml(item.priority)}</span>
+          </div>
+          <p class="notes">${escapeHtml(item.notes || "")}</p>
+          <div class="rd">${escapeHtml(item.rd || "")}</div>
+        </div>
+      `;
+    }
+
+    function renderBoard() {
+      const board = document.getElementById("board");
+      const items = filteredItems();
+      board.innerHTML = STATUSES.map((status) => {
+        const cards = items.filter((item) => item.status === status);
+        return `
+          <section class="column" data-status="${status}">
+            <h2>${STATUS_LABELS[status]}</h2>
+            <div class="column-body">
+              ${cards.length ? cards.map(makeCard).join("") : '<div class="empty">No tasks</div>'}
+            </div>
+          </section>
+        `;
+      }).join("");
+
+      board.querySelectorAll(".card").forEach((card) => {
+        card.addEventListener("dragstart", () => {
+          dragging = {
+            id: Number(card.dataset.id),
+            repo: card.dataset.repo
+          };
+        });
+        card.addEventListener("dragend", () => {
+          dragging = null;
+        });
+      });
+
+      board.querySelectorAll(".column").forEach((column) => {
+        column.addEventListener("dragover", (event) => {
+          event.preventDefault();
+          column.classList.add("drag-over");
+        });
+        column.addEventListener("dragleave", () => {
+          column.classList.remove("drag-over");
+        });
+        column.addEventListener("drop", async (event) => {
+          event.preventDefault();
+          column.classList.remove("drag-over");
+          if (!dragging) return;
+          await moveTask(dragging.repo, dragging.id, column.dataset.status);
+        });
+      });
+    }
+
+    async function moveTask(repoName, taskId, newStatus) {
+      const repoData = allData[repoName];
+      if (!repoData) return;
+      const task = repoData.backlog.find((item) => Number(item.id) === Number(taskId));
+      if (!task || task.status === newStatus) return;
+
+      task.status = newStatus;
+      renderBoard();
+
+      try {
+        const response = await fetch(`${API}/data/${repoName}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(repoData)
+        });
+        if (!response.ok) throw new Error("save failed");
+        showStatus("Saved");
+      } catch (error) {
+        showStatus("Save failed", true);
+      }
+    }
+
+    async function loadSkills() {
+      const response = await fetch(`${API}/skills`);
+      skillsData = await response.json();
+    }
+
+    function makeFileItem(path, name) {
+      const cursorLink = `cursor://file/${encodeURI(path)}`;
+      return `
+        <div class="pm-file-item" data-path="${escapeHtml(path)}">
+          <div class="pm-file-header">
+            <span class="pm-file-name">${escapeHtml(name)}</span>
+            <a class="pm-file-open" href="${cursorLink}" onclick="event.stopPropagation()">open ↗</a>
+          </div>
+          <div class="pm-file-body"></div>
+        </div>
+      `;
+    }
+
+    function renderPmList() {
+      const list = document.getElementById("pm-agent-list");
+      list.innerHTML = repoNames().map((repo) => `
+        <div class="pm-agent-item ${repo === activePm ? "active" : ""}" data-pm="${repo}">
+          <img class="pm-agent-face" src="${avatarFor(repo)}" alt="${repo.toUpperCase()} avatar">
+          <div>
+            <div class="pm-agent-name">${repo.toUpperCase()}</div>
+            <div class="pm-agent-sub">demo project manager</div>
+          </div>
+        </div>
+      `).join("");
+
+      list.querySelectorAll("[data-pm]").forEach((item) => {
+        item.addEventListener("click", () => {
+          activePm = item.dataset.pm;
+          renderPmList();
+          renderPmPanel();
+        });
+      });
+    }
+
+    function renderPmPanel() {
+      const repo = activePm;
+      const panel = document.getElementById("pm-skills-panel");
+      const repoRoot = repos[repo]?.root || "";
+      const repoSkills = skillsData[repo] || [];
+      const sharedSkills = skillsData.shared || [];
+      const agentsPath = `${repoRoot}/AGENTS.md`;
+      const repoSkillHtml = repoSkills.length
+        ? `<div class="pm-file-list">${repoSkills.map((skill) => makeFileItem(skill.path, skill.file)).join("")}</div>`
+        : '<div class="pm-skills-empty">No project skills yet.</div>';
+      const sharedSkillHtml = sharedSkills.length
+        ? `<div class="pm-file-list">${sharedSkills.map((skill) => makeFileItem(skill.path, skill.file)).join("")}</div>`
+        : '<div class="pm-skills-empty">No shared skills yet.</div>';
+
+      panel.innerHTML = `
+        <div class="pm-skills-header">
+          <img class="pm-skills-avatar" src="${avatarFor(repo)}" alt="${repo.toUpperCase()} avatar">
+          <div>
+            <div class="pm-skills-name">${repo.toUpperCase()}</div>
+            <div class="pm-skills-project">${escapeHtml(repoRoot.replace(/.*\/projects\//, "projects/"))}</div>
+          </div>
+        </div>
+        <div class="pm-section-label">Instructions</div>
+        <div class="pm-file-list">${makeFileItem(agentsPath, "AGENTS.md")}</div>
+        <div class="pm-section-label">Project skills</div>
+        ${repoSkillHtml}
+        <div class="pm-section-label">Shared meta skills</div>
+        ${sharedSkillHtml}
+      `;
+    }
+
+    function openPmModal() {
+      activePm = activePm || repoNames()[0] || null;
+      renderPmList();
+      renderPmPanel();
+      document.getElementById("pm-modal-overlay").classList.add("active");
+    }
+
+    function closePmModal() {
+      document.getElementById("pm-modal-overlay").classList.remove("active");
+    }
+
+    document.getElementById("pm-skills-panel").addEventListener("click", async (event) => {
+      if (event.target.closest(".pm-file-open")) return;
+      const header = event.target.closest(".pm-file-header");
+      if (!header) return;
+
+      const item = header.closest(".pm-file-item");
+      const body = item.querySelector(".pm-file-body");
+      const path = item.dataset.path;
+      const isExpanded = item.classList.toggle("expanded");
+      body.style.display = isExpanded ? "block" : "none";
+
+      if (isExpanded && !body.dataset.loaded) {
+        body.innerHTML = "<pre>loading...</pre>";
+        try {
+          const response = await fetch(`${API}/file?path=${encodeURIComponent(path)}`);
+          const data = await response.json();
+          body.innerHTML = `<pre>${escapeHtml(data.content || "")}</pre>`;
+          body.dataset.loaded = "1";
+        } catch {
+          body.innerHTML = "<pre>failed to load</pre>";
+        }
+      }
+    });
+
+    document.getElementById("settings-btn").addEventListener("click", openPmModal);
+    document.getElementById("pm-modal-close").addEventListener("click", closePmModal);
+    document.getElementById("pm-modal-overlay").addEventListener("click", (event) => {
+      if (event.target === document.getElementById("pm-modal-overlay")) closePmModal();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closePmModal();
+    });
+
+    async function boot() {
+      const [reposRes, dataRes] = await Promise.all([
+        fetch(`${API}/repos`),
+        fetch(`${API}/data`),
+        loadSkills()
+      ]);
+      repos = await reposRes.json();
+      allData = await dataRes.json();
+      renderFilters();
+      renderBoard();
+    }
+
+    boot().catch(() => showStatus("Load failed", true));
+  </script>
+</body>
+</html>
