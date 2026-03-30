@@ -1,5 +1,14 @@
 {
-  "project": "research",
-  "pm_name": "Research PM",
-  "tasks": []
+  "backlog": [
+    {
+      "id": 1,
+      "notes": "T\u1ed5ng h\u1ee3p t\u1ea5t c\u1ea3 skills trong _skills/ v\u00e0 project skills. Ph\u00e2n t\u00edch workflow prep/run/review/wrap.",
+      "owner": "research",
+      "priority": "high",
+      "rd": "rds/rd-research-skills.md",
+      "status": "in_progress",
+      "title": "Nghi\u00ean c\u1ee9u c\u00e1c skills trong Zoo system"
+    }
+  ],
+  "archive": []
 }

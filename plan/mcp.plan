@@ -1,0 +1,258 @@
+# Plan: Zoo MCP Message Bus + Kanban Trigger Button
+
+## Context
+Zoo orchestrator chạy trong Claude Code terminal nhưng không có cách nào để UI Kanban gửi lệnh xuống. User muốn ấn button trên Kanban → gửi message "@ads làm task đang progress đi" → Zoo nhận và dispatch cho agent tương ứng.
+
+Cần: MCP server (TypeScript) làm message bus + Flask API bridge + UI button.
+
+---
+
+## Flow chi tiết (End-to-End)
+
+### Step 1: User click button trên Kanban
+```
+┌─────────────────────────────────────┐
+│  KANBAN UI (browser)                │
+│                                     │
+│  ┌───────────────────┐              │
+│  │ Task: "Optimize CPA"│             │
+│  │ Status: in_progress │             │
+│  │ [⚡ Trigger Agent]  │ ← click     │
+│  └─────────┬─────────┘              │
+│            ▼                        │
+│  ┌───────────────────┐              │
+│  │ Modal compose:     │              │
+│  │ To: [zoo]          │              │
+│  │ "@ads /run task #1"│              │
+│  │ [Send]             │ ← confirm    │
+│  └─────────┬─────────┘              │
+└────────────┼────────────────────────┘
+             │ POST /api/messages
+             ▼
+```
+
+### Step 2: Flask nhận & ghi message
+```
+┌─────────────────────────────────────┐
+│  FLASK SERVER (port 8765)           │
+│                                     │
+│  POST /api/messages                 │
+│  {from:"ui", to:"zoo",             │
+│   content:"@ads /run task #1"}      │
+│                                     │
+│  → Ghi vào state/messages.json      │
+│  → Response: 201 Created            │
+└─────────────┬───────────────────────┘
+              │ write to file
+              ▼
+┌─────────────────────────────────────┐
+│  state/messages.json                │
+│                                     │
+│  { "messages": [{                   │
+│      "id": "msg_1711...",           │
+│      "from": "ui",                  │
+│      "to": "zoo",                   │
+│      "content": "@ads /run task #1",│
+│      "status": "unread"             │
+│  }]}                                │
+└─────────────────────────────────────┘
+```
+
+### Step 3: Zoo agent đọc inbox qua MCP
+```
+┌─────────────────────────────────────┐
+│  ZOO AGENT (Claude Code terminal)   │
+│                                     │
+│  MCP tool: check_inbox("zoo")       │
+│  → Nhận: "@ads /run task #1"        │
+│  → ack_message(msg_id, "read")      │
+│                                     │
+│  Parse: @ads → route to Ads PM      │
+└─────────────┬───────────────────────┘
+              │ SendMessage (Claude Code built-in)
+              ▼
+```
+
+### Step 4: Ads agent nhận lệnh & làm task
+```
+┌─────────────────────────────────────┐
+│  ADS AGENT (subagent)               │
+│                                     │
+│  1. Đọc RD của task #1              │
+│  2. Chạy /run workflow              │
+│  3. Cập nhật data.json              │
+│  4. SendMessage → Zoo: "Done #1"    │
+└─────────────┬───────────────────────┘
+              │
+              ▼
+```
+
+### Step 5: Zoo báo kết quả về UI
+```
+┌─────────────────────────────────────┐
+│  ZOO AGENT                          │
+│                                     │
+│  MCP: send_message("zoo","ui",      │
+│       "Done: task #1")              │
+│  MCP: ack_message(msg_id, "done")   │
+└─────────────┬───────────────────────┘
+              │ write to messages.json
+              ▼
+┌─────────────────────────────────────┐
+│  KANBAN UI (polling mỗi 5s)        │
+│                                     │
+│  GET /api/messages                  │
+│  → Thấy "Done: task #1"            │
+│  → Hiện notification ✅             │
+│  → Refresh board                    │
+└─────────────────────────────────────┘
+```
+
+### Edge cases
+- **Zoo offline**: messages queue trong messages.json, Zoo đọc khi `/start`
+- **Agent busy**: messages xếp hàng FIFO, Zoo xử lý lần lượt
+- **messages.json lớn**: cleanup messages status="done" > 7 ngày
+
+---
+
+## Architecture tổng quan
+
+```
+Kanban UI  ──POST──▶  Flask API  ──write──▶  state/messages.json
+                                                     ▲
+Zoo agent (terminal)  ──MCP tool──▶  check_inbox()  ─┘
+     │
+     └──▶  SendMessage(@ads, "do task #1")
+```
+
+---
+
+## Phase 1: MCP Server (`mcp/`)
+
+### New files
+```
+zoo/mcp/
+├── package.json          # @modelcontextprotocol/sdk, tsx
+├── tsconfig.json
+└── src/
+    ├── index.ts          # Server entry, register 6 tools
+    ├── store.ts          # Read/write state/messages.json
+    └── types.ts          # Message interface
+```
+
+### Message store: `state/messages.json`
+```json
+{ "messages": [] }
+```
+
+### Message schema
+```ts
+interface Message {
+  id: string;            // msg_<timestamp>_<rand>
+  from: string;          // "ui" | "zoo" | "ads" | "research" | "builder" | "academic"
+  to: string;            // same set
+  content: string;       // e.g. "@ads /run task #1"
+  task_id?: number;
+  project?: string;
+  status: "unread" | "read" | "done";
+  created: string;       // ISO timestamp
+}
+```
+
+### 6 MCP Tools
+
+| Tool | Params | Description |
+|------|--------|-------------|
+| `check_inbox` | `{agent}` | Return unread messages for agent |
+| `send_message` | `{from, to, content, task_id?, project?}` | Post message to inbox |
+| `ack_message` | `{message_id, new_status?}` | Mark read/done |
+| `broadcast` | `{from, content}` | Send to all agents (except sender) |
+| `get_tasks` | `{project?}` | Read tasks from data.json |
+| `update_task` | `{project, task_id, updates}` | Update task status |
+
+---
+
+## Phase 2: Flask API Bridge
+
+### File: `ui/server.py` — add 3 endpoints after line 183
+
+```python
+MESSAGES_FILE = BASE_DIR / "state" / "messages.json"
+```
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/messages` | POST | UI sends message → write to messages.json |
+| `/api/messages` | GET | UI reads message history (?agent=&status=&limit=) |
+| `/api/messages/<agent>` | GET | Shorthand filtered by agent |
+
+---
+
+## Phase 3: Kanban UI Changes
+
+### File: `ui/index.html`
+
+**A. Trigger button on each card** (in `makeCard()` ~line 822)
+- Lightning bolt icon button, 28x28px
+- On click → open command compose modal
+
+**B. Command compose modal**
+- Pre-filled: `@{repo} /run task #{id} — {title}`
+- "To" field defaults to "zoo"
+- Send → POST `/api/messages` → toast confirmation
+
+**C. Message log panel**
+- Chat icon button in header (next to PM modal button)
+- Slide-out panel showing recent messages
+- Auto-poll every 5s
+- Unread count badge
+
+---
+
+## Phase 4: Zoo Agent Integration
+
+### Update: `CLAUDE.md` — add MCP usage section
+
+- At `/start`: call `check_inbox("zoo")` for queued UI messages
+- Parse `@ads ...` → route to ads PM
+- `ack_message(id, "read")` → process → `ack_message(id, "done")`
+- After task done: `send_message("zoo", "ui", "Done: ...")`
+
+### Register MCP: project `.claude/settings.local.json`
+```json
+{
+  "mcpServers": {
+    "zoo-mcp": {
+      "command": "npx",
+      "args": ["tsx", "mcp/src/index.ts"]
+    }
+  }
+}
+```
+
+---
+
+## Implementation Order
+
+1. `state/messages.json` — create empty store
+2. `mcp/` — package.json, tsconfig, src/types.ts, src/store.ts, src/index.ts
+3. `npm install` in mcp/
+4. `ui/server.py` — add 3 message endpoints
+5. `ui/index.html` — trigger button + modal + message log
+6. `.claude/settings.local.json` — register MCP server
+7. `CLAUDE.md` — update with MCP polling instructions
+
+## Verification
+1. Start Flask: `cd ui && python server.py` → test `curl -X POST localhost:8765/api/messages -H 'Content-Type: application/json' -d '{"from":"ui","to":"zoo","content":"@ads test"}'`
+2. Check `state/messages.json` has the message
+3. In Claude Code: call `check_inbox("zoo")` → should return the message
+4. On Kanban UI: click trigger button → compose → send → verify toast + message log
+5. Full e2e: UI send → Zoo check_inbox → Zoo dispatch → ack done
+
+## Critical Files
+- **New**: `mcp/package.json`, `mcp/tsconfig.json`, `mcp/src/index.ts`, `mcp/src/store.ts`, `mcp/src/types.ts`
+- **New**: `state/messages.json`
+- **Edit**: `ui/server.py` (add message endpoints after line 183)
+- **Edit**: `ui/index.html` (add trigger button in `makeCard()`, modal, message log panel)
+- **Edit**: `CLAUDE.md` (add MCP tools section)
+- **Edit**: `.claude/settings.local.json` (register MCP server)
