@@ -15,7 +15,7 @@ Zoo uses this to create a new RD for a task.
    - Skills Required: list PM-specific skills that apply
    - Done Criteria: testable checkboxes
 7. Write the RD to `projects/{project}/rds/RD-{NNN}-{slug}.md`.
-8. Update `projects/{project}/data.json`:
+8. Update `projects/{project}/tasks.json`:
    - Add new task entry with rd_path pointing to the RD
    - Set status → `scoped`
 9. Confirm: "RD created: {rd_path}. Task is scoped and ready for PM."

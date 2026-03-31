@@ -2,7 +2,7 @@
 
 Use when the RD is clear and you're ready to execute.
 
-1. Update data.json status → `in_progress`.
+1. Update tasks.json status → `in_progress`.
 2. Read the RD requirements one more time.
 3. Do the smallest correct version first.
 4. Use the PM-specific skills listed in the RD.

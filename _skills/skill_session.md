@@ -7,7 +7,7 @@ Zoo uses this for daily session management: /start, /end, /update, /report.
 1. Read `state/current.md` — today's priorities.
 2. Read `state/goals.md` — weekly/monthly context.
 3. Read the most recent session log in `sessions/`.
-4. Scan `projects/*/config.yaml` and `projects/*/data.json` for task overview.
+4. Scan `projects/*/config.yaml` and `projects/*/tasks.json` for task overview.
 5. For each project (per-project fault isolation):
    - Pull Jira status updates (if config.jira_board is set)
    - Pull Slack thread summaries (if config.slack_channel is set, AI summarize)
@@ -37,7 +37,7 @@ Zoo uses this for daily session management: /start, /end, /update, /report.
 
 ## /end (evening)
 
-1. Scan `projects/*/data.json` for tasks worked on today (updated date = today).
+1. Scan `projects/*/tasks.json` for tasks worked on today (updated date = today).
 2. Create session log in `sessions/YYYY-MM-DD.md`:
    - Done today: list tasks completed or progressed
    - Decisions: important choices made
@@ -48,7 +48,7 @@ Zoo uses this for daily session management: /start, /end, /update, /report.
 
 ## /update (mid-day)
 
-1. Quick scan of data.json changes since /start.
+1. Quick scan of tasks.json changes since /start.
 2. Brief status: "Since morning: {N} tasks progressed, {M} completed."
 3. Flag any new Slack threads or Jira updates.
 

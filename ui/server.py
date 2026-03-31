@@ -41,6 +41,12 @@ REPOS = {
         "skills_dir": BASE_DIR / "projects" / "academic" / "skills",
         "color": "#d8a8ff",
     },
+    "clare-htl-front": {
+        "path": BASE_DIR / "projects" / "clare-htl-front" / "data.json",
+        "root": BASE_DIR / "projects" / "clare-htl-front",
+        "skills_dir": BASE_DIR / "projects" / "clare-htl-front" / "skills",
+        "color": "#f27a7a",
+    },
 }
 
 
@@ -183,5 +189,5 @@ def get_file():
 
 
 if __name__ == "__main__":
-    print(f"Starting open-zeu UI at http://localhost:{PORT}")
+    print(f"Starting open-zoo UI at http://localhost:{PORT}")
     app.run(port=PORT, debug=True)

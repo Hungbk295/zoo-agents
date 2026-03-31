@@ -3,7 +3,7 @@
 Index completed RDs into the RAG knowledge base per project.
 
 ## When to run
-- After a task is marked `completed` in data.json
+- After a task is marked `completed` in tasks.json
 - Can also be run manually: "Zoo, index recent RDs"
 
 ## Steps

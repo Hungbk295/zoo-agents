@@ -1,19 +1,19 @@
 # Skill: jira_sync
 
-Zoo uses this to sync tasks between Jira and local data.json files.
+Zoo uses this to sync tasks between Jira and local tasks.json files.
 
 ## /daily flow
 
 1. Read `projects/*/config.yaml` to get jira_board per project.
 2. For each project with a jira_board configured:
    a. **Per-project fault isolation**: wrap in try/catch
-      - If Jira pull fails → warning, use cached data.json, continue to next project
+      - If Jira pull fails → warning, use cached tasks.json, continue to next project
       - If Jira pull succeeds → proceed
    b. Pull tasks from Jira API (via MCP or REST)
-   c. Compare with local data.json:
-      - New tasks in Jira → add to data.json with status `backlog`
-      - Status changed in Jira → update data.json
-      - Tasks in data.json not in Jira → keep (locally created)
+   c. Compare with local tasks.json:
+      - New tasks in Jira → add to tasks.json with status `backlog`
+      - Status changed in Jira → update tasks.json
+      - Tasks in tasks.json not in Jira → keep (locally created)
    d. Report: "{project}: {N} new, {M} updated"
 3. Summary: "Sync complete. Ads: 3 new. Research: 1 updated."
 
@@ -31,5 +31,5 @@ Zoo uses this to sync tasks between Jira and local data.json files.
 
 ## Rules
 - Jira is ALWAYS the master for task creation.
-- data.json is a local cache — never delete tasks that exist in Jira.
+- tasks.json is a local cache — never delete tasks that exist in Jira.
 - Per-project isolation: one project failing must NOT block other projects.

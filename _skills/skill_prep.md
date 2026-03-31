@@ -7,7 +7,7 @@ Fresh context every time (Ralph Wiggum Loop).
 ## Quy trình
 
 ### 1. Đọc context (PM tự làm)
-- Đọc task trong `data.json` — id, title, priority, deadline
+- Đọc task trong `tasks.json` — id, title, priority, deadline
 - Đọc RD trong `rds/` — requirements, done criteria, revision notes
 - Đọc skill files nếu RD liệt kê
 
@@ -33,7 +33,7 @@ PM ghi tất cả vào RD sections tương ứng.
 - Ghi approach dự kiến nếu đã rõ
 
 ### 5. Confirm & update status
-- User confirm "OK, ready" → update data.json status → `scoped`
+- User confirm "OK, ready" → update tasks.json status → `scoped`
 - Nếu chưa ready → giữ `todo`, ghi lại blockers trong RD
 
 ## Rules

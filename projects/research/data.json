@@ -8,6 +8,16 @@
       "rd": "rds/rd-research-skills.md",
       "status": "in_progress",
       "title": "Nghi\u00ean c\u1ee9u c\u00e1c skills trong Zoo system"
+    },
+    {
+      "id": 2,
+      "notes": "T\u00ecm t\u00e0i li\u1ec7u Git, \u0111\u1ec1 xu\u1ea5t c\u1ea5u tr\u00fac Agent Vault: lessons, commands/skills \u00f4n t\u1eadp, quiz system. Agent \u0111i\u1ec1u h\u01b0\u1edbng learner.",
+      "owner": "research",
+      "priority": "high",
+      "rd": "rds/RES-002-git-agent-vault.md",
+      "status": "done",
+      "updated_at": "2026-03-31",
+      "title": "Nghi\u00ean c\u1ee9u t\u00e0i li\u1ec7u Git d\u1ea1ng Agent Vault"
     }
   ],
   "archive": []

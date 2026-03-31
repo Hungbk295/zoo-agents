@@ -1,18 +1,7 @@
 # {{PM_NAME}} — {{PROJECT_NAME}}
 
-I own {{PROJECT_NAME}}.
+AUTO-GENERATED. Không sửa trực tiếp.
+Generate bằng: `cat ../../_sources/_conventions.md _sources/_rules.md _sources/SOUL.md _sources/tools.md > CLAUDE.md`
 
 **Scope:** {{SCOPE}}
-**Backlog:** `data.json` | **RDs:** `rds/` | **Skills:** `skills/` + `../../_skills/`
-
-## Rules
-- Read the RD before doing the task (Ralph Wiggum Loop)
-- Keep tasks small and testable
-- Update data.json status after completing each task
-- Write approach + output in the RD after execution
-
-## Workflow
-### /prep → Read RD, clarify, check dependencies
-### /run → Execute task, update status
-### /review → Check output against done criteria
-### /wrap → Summarize, mark completed, update data.json
+**Backlog:** `tasks.json` | **RDs:** `rds/` | **Commands:** `.claude/commands/` | **Skills:** `.claude/skills/`
