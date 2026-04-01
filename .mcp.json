@@ -1,0 +1,30 @@
+{
+  "mcpServers": {
+    "maestro-status": {
+      "args": [],
+      "command": "/Users/jc/Documents/Sth/JCSpace/maestro/target/release/bundle/macos/JSpace.app/Contents/MacOS/maestro-mcp-server",
+      "env": {
+        "MAESTRO_INSTANCE_ID": "8d60e119-0a72-49f4-91e9-db45d6d70c9d",
+        "MAESTRO_SESSION_ID": "9",
+        "MAESTRO_STATUS_URL": "http://127.0.0.1:9900/status"
+      },
+      "type": "stdio"
+    },
+    "pencil": {
+      "args": [
+        "--app",
+        "visual_studio_code"
+      ],
+      "command": "/Users/jc/.vscode/extensions/highagency.pencildev-0.6.36/out/mcp-server-darwin-arm64",
+      "type": "stdio"
+    },
+    "qmd": {
+      "args": [
+        "/Users/jc/Documents/Sth/JC_MEMORY/qmd/dist/qmd.js",
+        "mcp"
+      ],
+      "command": "/opt/homebrew/bin/node",
+      "type": "stdio"
+    }
+  }
+}

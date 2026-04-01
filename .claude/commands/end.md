@@ -5,7 +5,7 @@ allowed-tools: Read, Write, Bash(cat:*), Bash(ls:*), Bash(jq:*), Bash(date:*)
 
 ## End of Day
 
-1. Scan `projects/*/tasks.json` for tasks worked on today (updated_at = today)
+1. Scan `projects/*/data.json` for tasks worked on today (updated_at = today)
 2. Create session log in `sessions/YYYY-MM-DD.md`:
    - Done today: tasks completed or progressed
    - Decisions: important choices made

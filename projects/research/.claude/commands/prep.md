@@ -6,8 +6,8 @@ allowed-tools: Read, Write, Bash(cat:*), Bash(jq:*)
 ## Prep Phase — Thảo luận với user, không auto-run
 
 ### 1. Đọc context
-- Read `tasks.json` → find task đang "doing" hoặc "scoped"
-- Read RD của task (rd_path trong tasks.json)
+- Read `data.json` → find task đang "doing" hoặc "scoped"
+- Read RD của task (rd_path trong data.json)
 - Read skill files nếu RD reference
 
 ### 2. Thảo luận với user
@@ -22,7 +22,7 @@ allowed-tools: Read, Write, Bash(cat:*), Bash(jq:*)
 - Ghi approach dự kiến
 
 ### 4. Confirm
-- User confirm "OK, ready" → update tasks.json status → `doing`
+- User confirm "OK, ready" → update data.json status → `doing`
 - Chưa ready → giữ status, ghi blockers trong RD
 
 **Rule:** Không auto-run. Chờ user confirm trước khi chuyển doing.

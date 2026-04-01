@@ -24,11 +24,17 @@ Mô tả ngắn gọn task cần làm.
 ## Approach
 _(PM ghi sau khi execute)_
 
+## Execution Notes
+_(Append working log continuously while processing. Use timestamped bullets.)_
+
 ## Done Criteria
 - [ ]
 
 ## Output
 _(Link đến deliverable, metrics, kết quả)_
+
+## Final Summary
+_(Short final handoff summary written during /wrap)_
 
 ## Revision Log
 _(Zoo append khi có revision)_

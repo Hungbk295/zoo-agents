@@ -5,7 +5,7 @@ allowed-tools: Read, Write, Bash(*)
 
 ## Run Phase
 
-1. Update tasks.json status → `doing`
+1. Update data.json status → `doing`
 2. Read RD requirements one more time (Ralph Wiggum Loop)
 3. Do the smallest correct version first
 4. Use skills listed in RD

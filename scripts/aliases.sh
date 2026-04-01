@@ -2,79 +2,43 @@
 # Zoo Workspace Aliases
 # Source this file: source ~/Documents/Sth/Taphoa/nhanvien/zoo/scripts/aliases.sh
 # Or add to ~/.zshrc: source ~/Documents/Sth/Taphoa/nhanvien/zoo/scripts/aliases.sh
+#
+# Rules are auto-loaded from .claude/rules/ — no need to generate CLAUDE.md
 
 ZOO_ROOT="$HOME/Documents/Sth/Taphoa/nhanvien/zoo"
 
 # Zoo — Orchestrator (ở root)
-alias zoo='cd "$ZOO_ROOT" && \
-  cat _sources/_conventions.md _sources/_zoo_soul.md _sources/_zoo_rules.md _sources/_zoo_tools.md | tee AGENTS.md > CLAUDE.md && \
-  claude'
-
-alias zoo-codex='cd "$ZOO_ROOT" && \
-  cat _sources/_conventions.md _sources/_zoo_soul.md _sources/_zoo_rules.md _sources/_zoo_tools.md | tee AGENTS.md > CLAUDE.md && \
-  codex --dangerously-bypass-approvals-and-sandbox'
+alias zoo='cd "$ZOO_ROOT" && claude'
+alias zoo-codex='cd "$ZOO_ROOT" && codex --dangerously-bypass-approvals-and-sandbox'
 
 # PM Ads — Performance Marketing
-alias pm-ads='cd "$ZOO_ROOT" && \
-  cat _sources/_conventions.md | tee AGENTS.md > CLAUDE.md && \
-  cd projects/ads && \
-  cat ../../_sources/_conventions.md _sources/_rules.md _sources/SOUL.md _sources/tools.md | tee AGENTS.md > CLAUDE.md && \
-  claude'
-
-alias pm-ads-codex='cd "$ZOO_ROOT" && \
-  cat _sources/_conventions.md | tee AGENTS.md > CLAUDE.md && \
-  cd projects/ads && \
-  cat ../../_sources/_conventions.md _sources/_rules.md _sources/SOUL.md _sources/tools.md | tee AGENTS.md > CLAUDE.md && \
-  codex --dangerously-bypass-approvals-and-sandbox'
+alias pm-ads='cd "$ZOO_ROOT/projects/ads" && claude'
+alias pm-ads-codex='cd "$ZOO_ROOT/projects/ads" && codex --dangerously-bypass-approvals-and-sandbox'
 
 # PM Research — Research & Synthesis
-alias pm-research='cd "$ZOO_ROOT" && \
-  cat _sources/_conventions.md | tee AGENTS.md > CLAUDE.md && \
-  cd projects/research && \
-  cat ../../_sources/_conventions.md _sources/_rules.md _sources/SOUL.md _sources/tools.md | tee AGENTS.md > CLAUDE.md && \
-  claude'
-
-alias pm-research-codex='cd "$ZOO_ROOT" && \
-  cat _sources/_conventions.md | tee AGENTS.md > CLAUDE.md && \
-  cd projects/research && \
-  cat ../../_sources/_conventions.md _sources/_rules.md _sources/SOUL.md _sources/tools.md | tee AGENTS.md > CLAUDE.md && \
-  codex --dangerously-bypass-approvals-and-sandbox'
+alias pm-research='cd "$ZOO_ROOT/projects/research" && claude'
+alias pm-research-codex='cd "$ZOO_ROOT/projects/research" && codex --dangerously-bypass-approvals-and-sandbox'
 
 # PM Builder — Code & Automation
-alias pm-builder='cd "$ZOO_ROOT" && \
-  cat _sources/_conventions.md | tee AGENTS.md > CLAUDE.md && \
-  cd projects/builder && \
-  cat ../../_sources/_conventions.md _sources/_rules.md _sources/SOUL.md _sources/tools.md | tee AGENTS.md > CLAUDE.md && \
-  claude'
-
-alias pm-builder-codex='cd "$ZOO_ROOT" && \
-  cat _sources/_conventions.md | tee AGENTS.md > CLAUDE.md && \
-  cd projects/builder && \
-  cat ../../_sources/_conventions.md _sources/_rules.md _sources/SOUL.md _sources/tools.md | tee AGENTS.md > CLAUDE.md && \
-  codex --dangerously-bypass-approvals-and-sandbox'
+alias pm-builder='cd "$ZOO_ROOT/projects/builder" && claude'
+alias pm-builder-codex='cd "$ZOO_ROOT/projects/builder" && codex --dangerously-bypass-approvals-and-sandbox'
 
 # PM Academic — Academic Writing
-alias pm-academic='cd "$ZOO_ROOT" && \
-  cat _sources/_conventions.md | tee AGENTS.md > CLAUDE.md && \
-  cd projects/academic && \
-  cat ../../_sources/_conventions.md _sources/_rules.md _sources/SOUL.md _sources/tools.md | tee AGENTS.md > CLAUDE.md && \
-  claude'
-
-alias pm-academic-codex='cd "$ZOO_ROOT" && \
-  cat _sources/_conventions.md | tee AGENTS.md > CLAUDE.md && \
-  cd projects/academic && \
-  cat ../../_sources/_conventions.md _sources/_rules.md _sources/SOUL.md _sources/tools.md | tee AGENTS.md > CLAUDE.md && \
-  codex --dangerously-bypass-approvals-and-sandbox'
+alias pm-academic='cd "$ZOO_ROOT/projects/academic" && claude'
+alias pm-academic-codex='cd "$ZOO_ROOT/projects/academic" && codex --dangerously-bypass-approvals-and-sandbox'
 
 # PM Clare — Clare Hotel Frontend
-alias pm-clare='cd "$ZOO_ROOT" && \
-  cat _sources/_conventions.md | tee AGENTS.md > CLAUDE.md && \
-  cd projects/clare-htl-front && \
-  cat ../../_sources/_conventions.md _sources/_rules.md _sources/SOUL.md _sources/tools.md | tee AGENTS.md > CLAUDE.md && \
-  claude'
+alias pm-clare='cd "$ZOO_ROOT/projects/clare-htl-front" && claude'
+alias pm-clare-codex='cd "$ZOO_ROOT/projects/clare-htl-front" && codex --dangerously-bypass-approvals-and-sandbox'
 
-alias pm-clare-codex='cd "$ZOO_ROOT" && \
-  cat _sources/_conventions.md | tee AGENTS.md > CLAUDE.md && \
-  cd projects/clare-htl-front && \
-  cat ../../_sources/_conventions.md _sources/_rules.md _sources/SOUL.md _sources/tools.md | tee AGENTS.md > CLAUDE.md && \
-  codex --dangerously-bypass-approvals-and-sandbox'
+# PM Albus — Albus Frontend
+alias pm-albus='cd "$ZOO_ROOT/projects/albus-fe" && claude'
+alias pm-albus-codex='cd "$ZOO_ROOT/projects/albus-fe" && codex --dangerously-bypass-approvals-and-sandbox'
+
+# PM Phuong Huyen — Workspace
+alias pm-phuonghuyen='cd "$ZOO_ROOT/projects/phuonghuyen-workspace" && claude'
+alias pm-phuonghuyen-codex='cd "$ZOO_ROOT/projects/phuonghuyen-workspace" && codex --dangerously-bypass-approvals-and-sandbox'
+
+# PM Zoo-Dev — Self-Improvement Agent
+alias pm-zoodev='cd "$ZOO_ROOT/projects/zoo-dev" && claude'
+alias pm-zoodev-codex='cd "$ZOO_ROOT/projects/zoo-dev" && codex --dangerously-bypass-approvals-and-sandbox'

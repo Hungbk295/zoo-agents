@@ -1,5 +1,4 @@
 {
-  "project": "{{PROJECT_SLUG}}",
-  "pm_name": "{{PM_NAME}}",
-  "tasks": []
+  "backlog": [],
+  "archive": []
 }

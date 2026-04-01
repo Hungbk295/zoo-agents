@@ -1,0 +1,27 @@
+{
+  "backlog": [
+    {
+      "created_at": "2026-04-02",
+      "deadline": null,
+      "id": "ZOD-001",
+      "notes": "T\u00edch h\u1ee3p MCP Jira (Atlassian Rovo) v\u00e0o Zoo. T\u1ea1o /jira command: sync, status, push.",
+      "priority": "high",
+      "rd": "rds/ZOD-001-jira-mcp-integration.md",
+      "ready": true,
+      "source": {
+        "ref": null,
+        "type": "manual"
+      },
+      "status": "todo",
+      "tags": [
+        "jira",
+        "mcp",
+        "integration",
+        "sync"
+      ],
+      "title": "T\u00edch h\u1ee3p MCP Jira v\u00e0o Zoo \u2014 Command /jira",
+      "updated_at": "2026-04-02"
+    }
+  ],
+  "archive": []
+}

@@ -1,0 +1,13 @@
+project:
+  slug: zoo-dev
+  name: Zoo Dev
+  description: Self-improvement agent for Zoo workspace
+  scope: UI, skills, templates, scripts, server, docs
+
+integrations:
+  jira:
+    enabled: false
+  slack:
+    enabled: false
+  git:
+    branch_prefix: zoo-dev/

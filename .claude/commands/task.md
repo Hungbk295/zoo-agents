@@ -1,5 +1,5 @@
 ---
-description: Create a new task — route to correct PM, create RD, update tasks.json
+description: Create a new task — route to correct PM, create RD, update data.json
 allowed-tools: Read, Write, Bash(cat:*), Bash(jq:*)
 ---
 
@@ -9,13 +9,13 @@ User input: $ARGUMENTS
 
 1. Route vào đúng project theo Routing Table trong CLAUDE.md
 2. Read `_templates/rd_template.md`
-3. Generate task ID: [PROJECT]-[NNN] (next number in project's tasks.json)
+3. Generate task ID: [PROJECT]-[NNN] (next number in project's data.json)
 4. Fill RD:
    - Task: clear one-sentence description
    - Requirements: specific, actionable
    - Done Criteria: testable checkboxes
 5. Write RD to `projects/{project}/rds/{ID}-{slug}.md`
-6. Update `projects/{project}/tasks.json`: add entry, status = scoped, link rd_path
+6. Update `projects/{project}/data.json`: add entry, status = scoped, link rd_path
 7. Confirm: "Task {ID} created → {project}. RD: {rd_path}"
 
 ## Rules
