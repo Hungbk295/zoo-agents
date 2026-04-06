@@ -21,6 +21,40 @@
       ],
       "title": "T\u00edch h\u1ee3p MCP Jira v\u00e0o Zoo \u2014 Command /jira",
       "updated_at": "2026-04-02"
+    },
+    {
+      "created_at": "2026-04-02",
+      "deadline": null,
+      "id": "ZOD-002",
+      "notes": "Task detail modal đang render markdown dạng plain text. Cần markdown theme để hiển thị headings, lists, code blocks, links đúng cách.",
+      "priority": "high",
+      "rd": "rds/ZOD-002-markdown-theme-task-detail.md",
+      "ready": false,
+      "source": {
+        "ref": null,
+        "type": "manual"
+      },
+      "status": "todo",
+      "tags": ["ui", "markdown", "theme", "task-detail"],
+      "title": "Markdown theme cho task detail UI",
+      "updated_at": "2026-04-02"
+    },
+    {
+      "created_at": "2026-04-02",
+      "deadline": null,
+      "id": "ZOD-003",
+      "notes": "Task detail modal hiện là fullscreen overlay. Chuyển sang layout 2 cột: main content bên trái, sidebar info bên phải giống Jira issue view.",
+      "priority": "high",
+      "rd": "rds/ZOD-003-detail-sidebar-layout.md",
+      "ready": false,
+      "source": {
+        "ref": null,
+        "type": "manual"
+      },
+      "status": "todo",
+      "tags": ["ui", "layout", "sidebar", "task-detail"],
+      "title": "Task detail sidebar layout (Jira-style)",
+      "updated_at": "2026-04-02"
     }
   ],
   "archive": []

@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "claude-peers": {
+      "command": "bun",
+      "args": [
+        "/Users/jc/Documents/Sth/Taphoa/peer/claude-peers-mcp/server.ts"
+      ],
+      "type": "stdio"
+    }
+  }
+}

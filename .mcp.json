@@ -1,15 +1,5 @@
 {
   "mcpServers": {
-    "maestro-status": {
-      "args": [],
-      "command": "/Users/jc/Documents/Sth/JCSpace/maestro/target/release/bundle/macos/JSpace.app/Contents/MacOS/maestro-mcp-server",
-      "env": {
-        "MAESTRO_INSTANCE_ID": "8d60e119-0a72-49f4-91e9-db45d6d70c9d",
-        "MAESTRO_SESSION_ID": "9",
-        "MAESTRO_STATUS_URL": "http://127.0.0.1:9900/status"
-      },
-      "type": "stdio"
-    },
     "pencil": {
       "args": [
         "--app",
@@ -24,6 +14,13 @@
         "mcp"
       ],
       "command": "/opt/homebrew/bin/node",
+      "type": "stdio"
+    },
+    "claude-peers": {
+      "command": "bun",
+      "args": [
+        "/Users/jc/Documents/Sth/Taphoa/peer/claude-peers-mcp/server.ts"
+      ],
       "type": "stdio"
     }
   }

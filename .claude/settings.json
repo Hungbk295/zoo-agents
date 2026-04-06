@@ -3,5 +3,20 @@
     "allow": [
       "Bash(curl:*)"
     ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/validate-json.sh",
+            "timeout": 5,
+            "statusMessage": "Validating JSON..."
+          }
+        ]
+      }
+    ]
   }
 }

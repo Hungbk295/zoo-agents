@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { getRepos, getAllData, getRepoData, updateRepoData, getSkills, getFile } from '../api'
-import { boardStatus, taskRdPath, PM_ORDER } from '../constants'
+import { API, boardStatus, taskRdPath, PM_ORDER } from '../constants'
 
 function extractMarkdownSection(content, heading) {
   if (!content) return ''
@@ -28,7 +28,10 @@ export function useZooData() {
   const [activeRepo, setActiveRepo] = useState('all')
   const [status, setStatus] = useState({ message: '', isError: false })
   const [rdCache, setRdCache] = useState({})
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const statusTimer = useRef(null)
+  const rdCacheRef = useRef(rdCache)
 
   const showStatus = useCallback((message, isError = false) => {
     setStatus({ message, isError })
@@ -38,15 +41,24 @@ export function useZooData() {
     }
   }, [])
 
-  const repoNames = useCallback(() => {
-    return PM_ORDER.filter((name) => repos[name])
-  }, [repos])
+  useEffect(() => { rdCacheRef.current = rdCache }, [rdCache])
+
+  const repoNames = useMemo(() => PM_ORDER.filter((name) => repos[name]), [repos])
 
   const fetchAll = useCallback(async () => {
-    const [reposRes, dataRes] = await Promise.all([getRepos(), getAllData()])
-    setRepos(reposRes)
-    setAllData(dataRes)
-    await getSkills().then(setSkillsData).catch(() => {})
+    setLoading(true)
+    setError(null)
+    try {
+      const [reposRes, dataRes] = await Promise.all([getRepos(), getAllData()])
+      setRepos(reposRes)
+      setAllData(dataRes)
+      await getSkills().then(setSkillsData).catch((err) => console.error('Failed to load skills:', err))
+    } catch (err) {
+      setError(err.message || 'Failed to load data')
+      throw err
+    } finally {
+      setLoading(false)
+    }
   }, [])
 
   const refetchRepo = useCallback(async (repoName) => {
@@ -58,14 +70,23 @@ export function useZooData() {
     }
   }, [fetchAll])
 
+  const retry = useCallback(() => {
+    setError(null)
+    fetchAll().catch(() => {})
+  }, [fetchAll])
+
+  useEffect(() => {
+    return () => clearTimeout(statusTimer.current)
+  }, [])
+
   // Boot
   useEffect(() => {
-    fetchAll().catch(() => showStatus('Load failed', true))
-  }, [fetchAll, showStatus])
+    fetchAll().catch(() => {})
+  }, [fetchAll])
 
   // SSE listener
   useEffect(() => {
-    const sse = new EventSource('/api/events')
+    const sse = new EventSource(`${API}/events`)
     sse.onmessage = (e) => {
       const repoName = e.data?.trim()
       if (repoName) {
@@ -82,18 +103,20 @@ export function useZooData() {
     const task = repoData.backlog.find((item) => String(item.id) === String(taskId))
     if (!task || boardStatus(task.status) === newStatus) return
 
+    const prev = repoData
     const updated = {
       ...repoData,
       backlog: repoData.backlog.map((item) =>
         String(item.id) === String(taskId) ? { ...item, status: newStatus } : item
       ),
     }
-    setAllData((prev) => ({ ...prev, [repoName]: updated }))
+    setAllData((p) => ({ ...p, [repoName]: updated }))
 
     try {
       await updateRepoData(repoName, updated)
       showStatus('Saved')
     } catch {
+      setAllData((p) => ({ ...p, [repoName]: prev }))
       showStatus('Save failed', true)
     }
   }, [allData, showStatus])
@@ -101,7 +124,7 @@ export function useZooData() {
   const loadRdSections = useCallback((item) => {
     const rdPath = taskRdPath(item, repos)
     if (!rdPath) return
-    const cached = rdCache[rdPath]
+    const cached = rdCacheRef.current[rdPath]
     if (cached) return
 
     setRdCache((prev) => ({ ...prev, [rdPath]: { loading: true } }))
@@ -113,10 +136,10 @@ export function useZooData() {
       .catch(() => {
         setRdCache((prev) => ({ ...prev, [rdPath]: { loading: false, loaded: true, error: true } }))
       })
-  }, [repos, rdCache])
+  }, [repos])
 
-  const filteredItems = useCallback(() => {
-    const names = activeRepo === 'all' ? repoNames() : [activeRepo]
+  const filteredItems = useMemo(() => {
+    const names = activeRepo === 'all' ? repoNames : [activeRepo]
     return names.flatMap((name) =>
       (allData[name]?.backlog || []).map((item) => ({
         ...item,
@@ -133,5 +156,6 @@ export function useZooData() {
   return {
     repos, allData, skillsData, activeRepo, setActiveRepo, status,
     repoNames, filteredItems, getTask, moveTask, loadRdSections, rdCache, showStatus,
+    loading, error, retry,
   }
 }

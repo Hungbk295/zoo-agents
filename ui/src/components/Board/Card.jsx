@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { FileText } from 'lucide-react'
 import { repoColor, priorityClass } from '../../constants'
 
@@ -7,13 +8,13 @@ const PRIORITY_STYLES = {
   low: 'bg-ctp-surface0/60 text-ctp-overlay2 border-ctp-surface0',
 }
 
-export default function Card({ item, repos, onClick }) {
+const Card = memo(function Card({ item, repos, onClick }) {
   const color = repoColor(item.repo, repos)
   const preview = item.last_update || item.current_focus || item.summary || item.notes || ''
   const pClass = priorityClass(item.priority)
 
   function handleDragStart(e) {
-    e.dataTransfer.setData('text/plain', JSON.stringify({ id: item.id, repo: item.repo }))
+    e.dataTransfer.setData('application/x-zoo-task', JSON.stringify({ id: item.id, repo: item.repo }))
     e.dataTransfer.effectAllowed = 'move'
   }
 
@@ -64,4 +65,6 @@ export default function Card({ item, repos, onClick }) {
       </div>
     </div>
   )
-}
+})
+
+export default Card

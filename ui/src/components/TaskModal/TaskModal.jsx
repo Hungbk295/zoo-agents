@@ -9,7 +9,7 @@ export default function TaskModal({ activeTask, repos, getTask, loadRdSections, 
 
   useEffect(() => {
     if (item) loadRdSections(item)
-  }, [item?.repo, item?.id, item?.rd])
+  }, [item?.repo, item?.id, item?.rd, loadRdSections])
 
   return (
     <Dialog.Root open={!!activeTask} onOpenChange={(open) => { if (!open) onClose() }}>
@@ -23,7 +23,7 @@ export default function TaskModal({ activeTask, repos, getTask, loadRdSections, 
                   {item.title}
                 </Dialog.Title>
                 <Dialog.Close asChild>
-                  <button className="w-7 h-7 rounded-lg flex items-center justify-center cursor-pointer hover:bg-ctp-pink/10 transition-colors duration-200">
+                  <button aria-label="Close" className="w-7 h-7 rounded-lg flex items-center justify-center cursor-pointer hover:bg-ctp-pink/10 transition-colors duration-200">
                     <X className="w-4 h-4 text-ctp-overlay2" />
                   </button>
                 </Dialog.Close>

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { useZooData } from './hooks/useZooData'
 import Header from './components/Header'
 import FilterBar from './components/FilterBar'
@@ -15,14 +15,19 @@ export default function App() {
   const [activeTask, setActiveTask] = useState(null)
   const [pmOpen, setPmOpen] = useState(false)
 
-  const names = repoNames()
-  const items = filteredItems()
+  const handleOpenPm = useCallback(() => setPmOpen(true), [])
+  const handleClosePm = useCallback(() => setPmOpen(false), [])
+  const handleCardClick = useCallback((repo, id) => setActiveTask({ repo, id }), [])
+  const handleCloseTask = useCallback(() => setActiveTask(null), [])
+
+  const names = repoNames
+  const items = filteredItems
 
   return (
     <div className="min-h-screen bg-ctp-base">
       <Header
         status={status}
-        onOpenPm={() => setPmOpen(true)}
+        onOpenPm={handleOpenPm}
       />
 
       <div className="px-5 py-5 md:px-7 md:py-6">
@@ -36,7 +41,7 @@ export default function App() {
           items={items}
           repos={repos}
           onDrop={moveTask}
-          onCardClick={(repo, id) => setActiveTask({ repo, id })}
+          onCardClick={handleCardClick}
         />
       </div>
 
@@ -46,12 +51,12 @@ export default function App() {
         getTask={getTask}
         loadRdSections={loadRdSections}
         rdCache={rdCache}
-        onClose={() => setActiveTask(null)}
+        onClose={handleCloseTask}
       />
 
       <PmModal
         open={pmOpen}
-        onClose={() => setPmOpen(false)}
+        onClose={handleClosePm}
         repoNames={names}
         repos={repos}
         skillsData={skillsData}

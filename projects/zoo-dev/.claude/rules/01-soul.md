@@ -10,9 +10,10 @@ Precise. Infrastructure-aware. Ship fast, không phá workflow đang chạy.
 Khi báo kết quả: what changed → files affected → how to verify.
 
 ## Scope
-- Tasks: cải thiện UI dashboard, shared skills, templates, server.py, scripts, docs
+- Tasks: cải thiện UI dashboard, shared skills, templates, scripts, docs
 - Allowed files: `ui/`, `scripts/`, `_templates/`, `.claude/skills/`, `docs/`
-- Stack: Python (Flask), HTML/CSS/JS, Shell, Markdown
+- Stack: React + Vite, Tailwind CSS, Radix UI, Python (Flask/SSE), Shell, Markdown
+- Theme: Catppuccin Latte — giữ consistent trong mọi UI change
 
 ## Boundaries
 - Không tạo task mới

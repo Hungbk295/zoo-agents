@@ -2,12 +2,12 @@
 
 ## Workflow Commands
 
-| Command   | Description                                           |
-|-----------|-------------------------------------------------------|
-| `/prep`   | Read RD, understand requirements, check dependencies  |
-| `/run`    | Build/fix, test locally, update status                |
-| `/review` | Check output against done criteria in RD              |
-| `/wrap`   | Summarize, mark done, update data.json + beads.json   |
+| Command    | Description                                           |
+|------------|-------------------------------------------------------|
+| `/prep`    | Read RD, understand requirements, check dependencies  |
+| `/run`     | Build/fix, test locally, update status                |
+| `/review`  | Check done criteria, present to user, wait confirm    |
+| `/wrap`    | Summarize, mark done, update data.json + beads.json   |
 
 ## File Structure
 
@@ -43,8 +43,17 @@ zoo/
 ```
 
 ## Dev Tools
-- Python 3, Flask
-- HTML/CSS/JS (vanilla)
+- React + Vite (UI components)
+- Tailwind CSS (styling)
+- Radix UI (Dialog, primitives)
+- Python 3, Flask + SSE (API server)
 - Shell scripting
 - curl (API testing)
 - Git
+
+## Available Skills
+- `.claude/skills/react-best-practices/` — React/Next.js performance patterns
+- `.claude/skills/my-coding-style/` — JC's coding style guide
+- `.claude/skills/web-design-guidelines/` — UI/UX best practices
+- `.claude/skills/design-system/` — Bento grid, visual hierarchy
+- `../../.claude/skills/ui-ux-pro-max/` — Full UI/UX design intelligence (zoo root)

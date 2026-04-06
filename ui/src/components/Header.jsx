@@ -1,6 +1,7 @@
+import { memo } from 'react'
 import { Monitor, Users } from 'lucide-react'
 
-export default function Header({ status, onOpenPm }) {
+const Header = memo(function Header({ status, onOpenPm }) {
   return (
     <header className="px-5 py-4 md:px-7 bg-ctp-mantle border-b border-ctp-surface0 flex justify-between items-center gap-4 flex-wrap">
       <div className="flex items-center gap-3">
@@ -14,7 +15,7 @@ export default function Header({ status, onOpenPm }) {
       </div>
       <div className="flex items-center gap-3">
         {status.message && (
-          <span className={`text-xs font-medium transition-colors duration-200 ${status.isError ? 'text-ctp-red' : 'text-ctp-rosewater'}`}>
+          <span aria-live="polite" className={`text-xs font-medium transition-colors duration-200 ${status.isError ? 'text-ctp-red' : 'text-ctp-rosewater'}`}>
             {status.message}
           </span>
         )}
@@ -28,4 +29,6 @@ export default function Header({ status, onOpenPm }) {
       </div>
     </header>
   )
-}
+})
+
+export default Header

@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useState, memo } from 'react'
 import { STATUS_LABELS, STATUS_COLORS } from '../../constants'
 import Card from './Card'
 
-export default function Column({ status, cards, repos, onDrop, onCardClick }) {
+const Column = memo(function Column({ status, cards, repos, onDrop, onCardClick }) {
   const [dragOver, setDragOver] = useState(false)
   const dotColor = STATUS_COLORS[status] || '#9ca0b0'
 
@@ -19,13 +19,14 @@ export default function Column({ status, cards, repos, onDrop, onCardClick }) {
     e.preventDefault()
     setDragOver(false)
     try {
-      const data = JSON.parse(e.dataTransfer.getData('text/plain'))
+      const data = JSON.parse(e.dataTransfer.getData('application/x-zoo-task'))
       onDrop(data.repo, data.id, status)
-    } catch {}
+    } catch (err) { console.error('Drop parse error:', err) }
   }
 
   return (
     <section
+      aria-label={`${STATUS_LABELS[status]} column`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
@@ -43,7 +44,7 @@ export default function Column({ status, cards, repos, onDrop, onCardClick }) {
           {cards.length}
         </span>
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2" role="list" aria-label={`${STATUS_LABELS[status]} tasks`}>
         {cards.length > 0
           ? cards.map((item) => (
               <Card
@@ -58,4 +59,6 @@ export default function Column({ status, cards, repos, onDrop, onCardClick }) {
       </div>
     </section>
   )
-}
+})
+
+export default Column

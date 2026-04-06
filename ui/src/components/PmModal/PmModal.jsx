@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 import PmAgentList from './PmAgentList'
@@ -6,6 +6,12 @@ import PmSkillsPanel from './PmSkillsPanel'
 
 export default function PmModal({ open, onClose, repoNames, repos, skillsData }) {
   const [activePm, setActivePm] = useState(repoNames[0] || null)
+
+  useEffect(() => {
+    if (repoNames.length > 0 && !repoNames.includes(activePm)) {
+      setActivePm(repoNames[0])
+    }
+  }, [repoNames, activePm])
 
   return (
     <Dialog.Root open={open} onOpenChange={(o) => { if (!o) onClose() }}>
@@ -16,7 +22,7 @@ export default function PmModal({ open, onClose, repoNames, repos, skillsData })
           <div className="flex items-center justify-between px-5 py-4 border-b border-ctp-surface0 bg-ctp-mantle">
             <Dialog.Title className="text-lg font-bold text-ctp-text m-0">Project managers</Dialog.Title>
             <Dialog.Close asChild>
-              <button className="w-7 h-7 rounded-lg flex items-center justify-center cursor-pointer hover:bg-ctp-pink/10 transition-colors duration-200">
+              <button aria-label="Close" className="w-7 h-7 rounded-lg flex items-center justify-center cursor-pointer hover:bg-ctp-pink/10 transition-colors duration-200">
                 <X className="w-4 h-4 text-ctp-overlay2" />
               </button>
             </Dialog.Close>
